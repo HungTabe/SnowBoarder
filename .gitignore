@@ -1,0 +1,55 @@
+# --- Unity Generated Files ---
+[Ll]ibrary/
+[Tt]emp/
+[Oo]bj/
+[Bb]uild/
+[Bb]uilds/
+[Ll]ogs/
+[Uu]ser[Ss]ettings/
+MemoryCaptures/
+
+# --- Visual Studio & Rider ---
+.vscode/
+.idea/
+*.csproj
+*.sln
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+*.cache/
+*.pidb
+*.svd
+
+# --- Unity Metadata & Caches ---
+/Assets/StreamingAssets/*.meta
+/Assets/AddressableAssetsData/*.bin
+/Assets/AddressableAssetsData/*.hash
+/Assets/AddressableAssetsData/*.settings
+/Assets/AddressableAssetsData/link.xml
+
+# --- Thư viện & Plugin ---
+/Packages/
+/ProjectSettings/EditorBuildSettings.asset
+ProjectSettings/ProjectVersion.txt
+
+# --- Thư mục Logs ---
+Logs/
+
+# --- Các file cá nhân ---
+/*.swp
+/*.swo
+/.DS_Store
+Thumbs.db
+Desktop.ini
+
+# --- Các file build có thể bị thay đổi ---
+*.apk
+*.ipa
+*.exe
+*.zip
+*.tar.gz
+
+# --- Tích hợp Git LFS (nếu dùng) ---
+# Thêm nếu bạn sử dụng Git LFS để quản lý file lớn
+# *.psd filter=lfs diff=lfs merge=lfs -text
