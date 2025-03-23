@@ -15,6 +15,6 @@ public class ScoreManager : MonoBehaviour
 
     private void UpdateScoreUI()
     {
-        scoreText.text = "Score: " + score.ToString();
+        scoreText.text = "J-Score: " + score.ToString();
     }
 }

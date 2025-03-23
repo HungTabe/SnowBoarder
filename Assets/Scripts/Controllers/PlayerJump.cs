@@ -21,8 +21,10 @@ public class PlayerJump : MonoBehaviour
     public AchievementsManager achievementsManager;
 
     private float jumpStartTime;  // Thời gian bắt đầu cú nhảy
-    private bool hasJumped;  // Kiểm tra xem người chơi đã nhảy chưa
     private bool isGrounded;  // Kiểm tra khi người chơi chạm đất
+
+    private bool isJumping;  // Kiểm tra xem người chơi có đang nhảy không
+    private float jumpDuration;  // Thời gian nhảy
 
 
 
@@ -33,52 +35,58 @@ public class PlayerJump : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space) && this.IsAlive.Value)
+        // Kiểm tra nhấn phím nhảy
+        if (Input.GetKeyDown(KeyCode.Space) && this.IsAlive.Value && RemainingJumps.Value > 0)
         {
             this.inputJump = true;
-            this.hasJumped = true;
+            this.isJumping = true;  // Đánh dấu nhân vật đang nhảy
             this.jumpStartTime = Time.time;  // Ghi lại thời gian khi cú nhảy bắt đầu
         }
+
+
+        // Debug Log các giá trị của inputJump và isJumping
+        Debug.Log("inputJump: " + inputJump + ", isJumping: " + isJumping);
     }
 
     private void FixedUpdate()
     {
-        // Player jump
+        // Thực hiện cú nhảy nếu người chơi nhấn phím nhảy và còn lần nhảy
         if (this.inputJump && this.RemainingJumps.Value > 0)
         {
             this.Jump(this.JumpForce.Value);
             this.RemainingJumps.ApplyChange(-1);
             this.PlayerJumpEvent.Invoke();
 
-      
+            // Cộng điểm mỗi khi người chơi nhảy
+            scoreManager.AddScore(100);
 
-#if UNITY_EDITOR
-            Debug.Log(string.Format("PlayerJump.Jump [JumpForce: {0}] [RemainingJumps: {1}]", this.JumpForce.Value, this.RemainingJumps.Value));
-            #endif
+            // Cleanup sau khi thực hiện cú nhảy
+            this.inputJump = false;
         }
 
-        // Cleanup
-        this.inputJump = false;
+        // Debug Log giá trị isGrounded sau mỗi lần kiểm tra
+        Debug.Log("isGrounded in FixedUpdate: " + isGrounded);
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
         // Kiểm tra khi nhân vật chạm đất
-        if (collision.gameObject.CompareTag("Ground") && isGrounded == false)
+        if (collision.gameObject.CompareTag("Ground") && !isGrounded)
         {
             isGrounded = true;  // Đánh dấu đã chạm đất
+            this.isJumping = false;
 
-            // Tính thời gian nhảy
-            float jumpDuration = Time.time - jumpStartTime;
+            // Tính tổng thời gian nhảy từ lúc nhảy đến khi chạm đất
+            jumpDuration = Time.time - jumpStartTime;
 
-            // Kiểm tra thời gian nhảy và cộng điểm
-            if (jumpDuration <= 3f)  // Nếu nhảy dưới 3 giây
+            // Cộng điểm nếu thời gian nhảy dưới 3 giây
+            if (jumpDuration <= 3f)
             {
-                scoreManager.AddScore(50);  // Cộng thêm điểm cho nhảy nhanh
+                scoreManager.AddScore(50);  // Cộng thêm điểm cho cú nhảy nhanh
             }
 
-            // Kiểm tra flip (thực hiện logic flip)
-            if (Mathf.Abs(rigidBody.angularVelocity) > 0)  // Điều kiện giả sử có flip (lúc nhân vật xoay)
+            // Cộng điểm nếu nhân vật thực hiện flip trong không trung
+            if (Mathf.Abs(rigidBody.angularVelocity) > 0)
             {
                 scoreManager.AddScore(200);  // Cộng điểm cho flip
             }
@@ -87,15 +95,23 @@ public class PlayerJump : MonoBehaviour
             achievementsManager.OnFlipPerformed();
             achievementsManager.OnScoreMilestoneReached();
         }
+
+        // Debug Log các giá trị của isGrounded và jumpDuration khi chạm đất
+        Debug.Log("OnCollisionEnter2D -> isGrounded: " + isGrounded + ", jumpDuration: " + jumpDuration);
+
     }
 
     private void OnCollisionExit2D(Collision2D collision)
     {
-        // Kiểm tra khi nhân vật rời khỏi mặt đất
-        if (collision.gameObject.CompareTag("Ground"))
+        // Kiểm tra khi nhân vật rời khỏi mặt đất (bắt đầu bay lên)
+        if (collision.gameObject.CompareTag("Ground") && this.inputJump)
         {
             isGrounded = false;  // Đánh dấu đã rời đất
+
         }
+
+        // Debug Log giá trị của isGrounded khi rời khỏi mặt đất
+        Debug.Log("OnCollisionExit2D -> isGrounded: " + isGrounded);
     }
 
     /// <summary>
