@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.SceneManagement;
 
 public class PlayerJump : MonoBehaviour
 {
@@ -46,6 +47,12 @@ public class PlayerJump : MonoBehaviour
 
         // Debug Log các giá trị của inputJump và isJumping
         Debug.Log("inputJump: " + inputJump + ", isJumping: " + isJumping);
+
+        if (!this.IsAlive.Value)
+        {
+            SceneManager.LoadScene("GameOverScene");
+        }
+
     }
 
     private void FixedUpdate()
@@ -80,7 +87,7 @@ public class PlayerJump : MonoBehaviour
             jumpDuration = Time.time - jumpStartTime;
 
             // Cộng điểm nếu thời gian nhảy dưới 3 giây
-            if (jumpDuration <= 3f)
+            if (jumpDuration <= 1f)
             {
                 scoreManager.AddScore(50);  // Cộng thêm điểm cho cú nhảy nhanh
             }

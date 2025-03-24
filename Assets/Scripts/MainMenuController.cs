@@ -15,13 +15,12 @@ public class MainMenuController : MonoBehaviour
     public void UpgradePower()
     {
         // Logic nâng cấp sức mạnh (chưa có, bạn có thể tạo menu nâng cấp)
-        Debug.Log("Upgrade Power clicked");
+        SceneManager.LoadScene("UpgradeMenu");
     }
 
     // Hàm này có thể gọi khi nhấn nút Upgrade Skin
-    public void UpgradeSkin()
+    public void Quit()
     {
-        // Logic nâng cấp skin (chưa có, bạn có thể tạo menu nâng cấp)
-        Debug.Log("Upgrade Skin clicked");
+        SceneManager.LoadScene("MainMenu2D");
     }
 }
